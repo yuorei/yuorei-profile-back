@@ -20,7 +20,6 @@ func main() {
 
 	r.HandleFunc("/blog", h.GetBlogs).Methods("GET")
 	r.HandleFunc("/blog/{title}", h.GetBlogByTitle).Methods("GET")
-	http.Handle("/", r)
 	fmt.Println("起動")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
