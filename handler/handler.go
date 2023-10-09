@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"time"
 
 	"cloud.google.com/go/firestore"
 	"github.com/gorilla/mux"
@@ -18,6 +19,13 @@ func NewHandler(client *firestore.Client) *Handler {
 	return &Handler{
 		client: client,
 	}
+}
+
+type Blog struct {
+	ID      string    `json:"id"`
+	Title   string    `json:"title"`
+	Content string    `json:"content"`
+	Date    time.Time `json:"date"`
 }
 
 func (h *Handler) GetBlogs(w http.ResponseWriter, r *http.Request) {
@@ -45,7 +53,7 @@ func (h *Handler) GetBlogs(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(results)
 }
 
-func (h *Handler) GetBlogByTitle(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) GetBlogByID(w http.ResponseWriter, r *http.Request) {
 	// CORS対応: 必要なヘッダーを追加
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
@@ -61,7 +69,14 @@ func (h *Handler) GetBlogByTitle(w http.ResponseWriter, r *http.Request) {
 	}
 	result := dsnap.Data()
 
+	blog := Blog{
+		ID:      result["id"].(string),
+		Title:   result["title"].(string),
+		Content: result["content"].(string),
+		Date:    result["date"].(time.Time),
+	}
+
 	// JSONをクライアントに返す
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(result)
+	json.NewEncoder(w).Encode(blog)
 }
