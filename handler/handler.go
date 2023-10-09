@@ -53,24 +53,13 @@ func (h *Handler) GetBlogByTitle(w http.ResponseWriter, r *http.Request) {
 
 	// クエリパラメーターからタイトルを取得
 	params := mux.Vars(r)
-	title := params["title"]
+	id := params["id"]
 
-	// Firestoreからデータを取得
-	collection := h.client.Collection("blog")
-	documents, err := collection.Documents(context.Background()).GetAll()
+	dsnap, err := h.client.Collection("blog").Doc(id).Get(context.Background())
 	if err != nil {
-		log.Fatalf("Failed to retrieve documents: %v", err)
+		return
 	}
-
-	// レスポンスのJSONを作成
-	var result map[string]any
-	for _, doc := range documents {
-		data := doc.Data()
-		if data["title"] == title {
-			result = data
-			break
-		}
-	}
+	result := dsnap.Data()
 
 	// JSONをクライアントに返す
 	w.Header().Set("Content-Type", "application/json")

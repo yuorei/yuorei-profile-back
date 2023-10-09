@@ -10,6 +10,8 @@ import (
 	"github.com/gorilla/mux"
 )
 
+const port = ":8080"
+
 func main() {
 	r := mux.NewRouter()
 	client, err := fiestore.NewFirestoreClient()
@@ -19,7 +21,9 @@ func main() {
 	h := handler.NewHandler(client)
 
 	r.HandleFunc("/blog", h.GetBlogs).Methods("GET")
-	r.HandleFunc("/blog/{title}", h.GetBlogByTitle).Methods("GET")
-	fmt.Println("起動")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	r.HandleFunc("/blog/{id}", h.GetBlogByTitle).Methods("GET")
+
+	http.Handle("/", r)
+	fmt.Println("起動" + port)
+	log.Fatal(http.ListenAndServe(port, nil))
 }
