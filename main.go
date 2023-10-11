@@ -21,8 +21,7 @@ func main() {
 	h := handler.NewHandler(client)
 
 	r.HandleFunc("/blog", h.GetBlogs).Methods("GET")
-	r.HandleFunc("/blog/{id}", h.GetBlogByTitle).Methods("GET")
-
+	r.HandleFunc("/blog/{id}", h.GetBlogByID).Methods("GET")
 	http.Handle("/", r)
 	fmt.Println("起動" + port)
 	log.Fatal(http.ListenAndServe(port, nil))

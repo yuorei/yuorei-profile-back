@@ -3,9 +3,9 @@ package handler
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
-	"time"
 
 	"cloud.google.com/go/firestore"
 	"github.com/gorilla/mux"
@@ -21,11 +21,12 @@ func NewHandler(client *firestore.Client) *Handler {
 	}
 }
 
+// フィールドを外部パッケージから参照できるようにしなければ firestore にデータを追加できない
 type Blog struct {
-	ID      string    `json:"id"`
-	Title   string    `json:"title"`
-	Content string    `json:"content"`
-	Date    time.Time `json:"date"`
+	ID      string `json:"ID"`
+	Title   string `json:"Title"`
+	Content string `json:"Content"`
+	Date    string `json:"Date"`
 }
 
 func (h *Handler) GetBlogs(w http.ResponseWriter, r *http.Request) {
@@ -65,15 +66,16 @@ func (h *Handler) GetBlogByID(w http.ResponseWriter, r *http.Request) {
 
 	dsnap, err := h.client.Collection("blog").Doc(id).Get(context.Background())
 	if err != nil {
+		fmt.Println(err)
 		return
 	}
 	result := dsnap.Data()
 
 	blog := Blog{
-		ID:      result["id"].(string),
-		Title:   result["title"].(string),
-		Content: result["content"].(string),
-		Date:    result["date"].(time.Time),
+		ID:      result["ID"].(string),
+		Title:   result["Title"].(string),
+		Content: result["Content"].(string),
+		Date:    result["Date"].(string),
 	}
 
 	// JSONをクライアントに返す
