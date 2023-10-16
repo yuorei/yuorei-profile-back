@@ -3,7 +3,6 @@ package main
 import (
 	fiestore "blog/firestore"
 	"blog/handler"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -28,6 +27,6 @@ func main() {
 	r.HandleFunc("/blog", h.GetBlogs).Methods("GET")
 	r.HandleFunc("/blog/{id}", h.GetBlogByID).Methods("GET")
 	http.Handle("/", r)
-	fmt.Println("起動" + port)
+	log.Println("起動" + port)
 	log.Fatal(http.ListenAndServe(port, nil))
 }
