@@ -16,15 +16,15 @@ func NewFirestoreClient() (*firestore.Client, error) {
 	var err error
 
 	// Firestoreの初期化
-	if "prod" == os.Getenv("PROD") {
-		conf := &firebase.Config{ProjectID: os.Getenv("PROJECT_ID")}
-		app, err = firebase.NewApp(ctx, conf)
+	if "dev" == os.Getenv("DEV") {
+		opt := option.WithCredentialsFile("path/to/serviceAccount.json")
+		app, err = firebase.NewApp(ctx, nil, opt)
 		if err != nil {
 			log.Fatalf("Failed to initialize Firestore: %v", err)
 		}
 	} else {
-		opt := option.WithCredentialsFile("path/to/serviceAccount.json")
-		app, err = firebase.NewApp(ctx, nil, opt)
+		conf := &firebase.Config{ProjectID: os.Getenv("PROJECT_ID")}
+		app, err = firebase.NewApp(ctx, conf)
 		if err != nil {
 			log.Fatalf("Failed to initialize Firestore: %v", err)
 		}
