@@ -8,11 +8,16 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/joho/godotenv"
 )
 
 const port = ":8080"
 
 func main() {
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 	r := mux.NewRouter()
 	client, err := fiestore.NewFirestoreClient()
 	if err != nil {

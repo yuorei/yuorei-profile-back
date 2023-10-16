@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"cloud.google.com/go/firestore"
 	"github.com/gorilla/mux"
@@ -31,7 +32,7 @@ type Blog struct {
 
 func (h *Handler) GetBlogs(w http.ResponseWriter, r *http.Request) {
 	// CORS対応: 必要なヘッダーを追加
-	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+	w.Header().Set("Access-Control-Allow-Origin", os.Getenv("ORIGIN"))
 	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
@@ -56,7 +57,7 @@ func (h *Handler) GetBlogs(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) GetBlogByID(w http.ResponseWriter, r *http.Request) {
 	// CORS対応: 必要なヘッダーを追加
-	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+	w.Header().Set("Access-Control-Allow-Origin", os.Getenv("ORIGIN"))
 	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
