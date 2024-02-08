@@ -24,10 +24,12 @@ func NewHandler(client *firestore.Client) *Handler {
 
 // フィールドを外部パッケージから参照できるようにしなければ firestore にデータを追加できない
 type Blog struct {
-	ID      string `json:"ID"`
-	Title   string `json:"Title"`
-	Content string `json:"Content"`
-	Date    string `json:"Date"`
+	ID       string `json:"ID"`
+	Title    string `json:"Title"`
+	Content  string `json:"Content"`
+	Date     string `json:"Date"`
+	IsPublic bool   `json:"IsPublic"`
+	OGPURL   string `json:"OGPURL"`
 }
 
 func (h *Handler) GetBlogs(w http.ResponseWriter, r *http.Request) {
@@ -47,6 +49,9 @@ func (h *Handler) GetBlogs(w http.ResponseWriter, r *http.Request) {
 	var results []map[string]any
 	for _, doc := range documents {
 		data := doc.Data()
+		if data["IsPublic"] == false {
+			continue
+		}
 		results = append(results, data)
 	}
 
@@ -72,11 +77,18 @@ func (h *Handler) GetBlogByID(w http.ResponseWriter, r *http.Request) {
 	}
 	result := dsnap.Data()
 
+	// if result["IsPublic"] == false {
+	// 	http.Error(w, "Not Found", http.StatusNotFound)
+	// 	return
+	// }
+
 	blog := Blog{
-		ID:      result["ID"].(string),
-		Title:   result["Title"].(string),
-		Content: result["Content"].(string),
-		Date:    result["Date"].(string),
+		ID:       result["ID"].(string),
+		Title:    result["Title"].(string),
+		Content:  result["Content"].(string),
+		Date:     result["Date"].(string),
+		IsPublic: result["IsPublic"].(bool),
+		OGPURL:   result["OGPURL"].(string),
 	}
 
 	// JSONをクライアントに返す
